@@ -3,34 +3,78 @@
 <head>
   <meta charset="UTF-8">
   <title>Calculadora de Dosificación</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Ajuste móvil -->
   <style>
-    body { font-family: Arial, sans-serif; margin: 40px; }
-    label { display: block; margin-top: 10px; }
-    input { margin-top: 5px; padding: 5px; width: 200px; }
-    button { margin-top: 15px; padding: 10px 20px; }
-    .resultado { margin-top: 20px; font-weight: bold; }
+    body { 
+      font-family: Arial, sans-serif; 
+      margin: 20px; 
+      background: #f9f9f9;
+    }
+    h2 { text-align: center; }
+    .formulario {
+      max-width: 400px; 
+      margin: auto; 
+      background: #fff; 
+      padding: 20px; 
+      border-radius: 10px; 
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    label { display: block; margin-top: 15px; font-weight: bold; }
+    input { 
+      margin-top: 5px; 
+      padding: 10px; 
+      width: 100%; 
+      box-sizing: border-box; 
+      border: 1px solid #ccc; 
+      border-radius: 5px;
+    }
+    button { 
+      margin-top: 20px; 
+      padding: 12px; 
+      width: 100%; 
+      background: #007BFF; 
+      color: white; 
+      border: none; 
+      border-radius: 5px; 
+      font-size: 16px;
+    }
+    button:hover { background: #0056b3; }
+    .resultado { 
+      margin-top: 20px; 
+      font-weight: bold; 
+      text-align: center; 
+      background: #eef; 
+      padding: 10px; 
+      border-radius: 5px;
+    }
   </style>
 </head>
 <body>
   <h2>Calculadora de Dosificación</h2>
-  <label>Coagulante (ml/L):
-    <input type="number" id="coagulante" step="0.1">
-  </label>
-  <label>Floculante (ml/L):
-    <input type="number" id="floculante" step="0.1">
-  </label>
-  <label>Flujo de tratamiento (m³/h):
-    <input type="number" id="flujo" step="0.1">
-  </label>
-  <button onclick="calcular()">Calcular</button>
-
-  <div class="resultado" id="resultado"></div>
+  <div class="formulario">
+    <label>Coagulante (ml/L):
+      <input type="number" id="coagulante" step="0.1">
+    </label>
+    <label>Floculante (ml/L):
+      <input type="number" id="floculante" step="0.1">
+    </label>
+    <label>Flujo de tratamiento (m³/h):
+      <input type="number" id="flujo" step="0.1">
+    </label>
+    <button onclick="calcular()">Calcular</button>
+    <div class="resultado" id="resultado"></div>
+  </div>
 
   <script>
     function calcular() {
       const coagulante_ml = parseFloat(document.getElementById('coagulante').value);
       const floculante_ml = parseFloat(document.getElementById('floculante').value);
       const flujo_m3h = parseFloat(document.getElementById('flujo').value);
+
+      if (isNaN(coagulante_ml) || isNaN(floculante_ml) || isNaN(flujo_m3h)) {
+        document.getElementById('resultado').innerHTML = "⚠️ Ingresa todos los valores.";
+        return;
+      }
 
       const maxCoagulante = 180;
       const maxFloculante = 373;
@@ -41,9 +85,15 @@
       const porcentajeCoagulante = (caudalCoagulante / maxCoagulante) * 100;
       const porcentajeFloculante = (caudalFloculante / maxFloculante) * 100;
 
-      document.getElementById('resultado').innerHTML =
+      let mensaje = 
         `Coagulante: ${caudalCoagulante.toFixed(2)} L/h → ${porcentajeCoagulante.toFixed(1)}%<br>
          Floculante: ${caudalFloculante.toFixed(2)} L/h → ${porcentajeFloculante.toFixed(1)}%`;
+
+      if (porcentajeCoagulante > 100 || porcentajeFloculante > 100) {
+        mensaje += "<br>⚠️ Atención: la bomba no alcanza este caudal.";
+      }
+
+      document.getElementById('resultado').innerHTML = mensaje;
     }
   </script>
 </body>
