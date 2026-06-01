@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Calculadora de Dosificación</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 40px; }
+    label { display: block; margin-top: 10px; }
+    input { margin-top: 5px; padding: 5px; width: 200px; }
+    button { margin-top: 15px; padding: 10px 20px; }
+    .resultado { margin-top: 20px; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <h2>Calculadora de Dosificación</h2>
+  <label>Coagulante (ml/L):
+    <input type="number" id="coagulante" step="0.1">
+  </label>
+  <label>Floculante (ml/L):
+    <input type="number" id="floculante" step="0.1">
+  </label>
+  <label>Flujo de tratamiento (m³/h):
+    <input type="number" id="flujo" step="0.1">
+  </label>
+  <button onclick="calcular()">Calcular</button>
+
+  <div class="resultado" id="resultado"></div>
+
+  <script>
+    function calcular() {
+      const coagulante_ml = parseFloat(document.getElementById('coagulante').value);
+      const floculante_ml = parseFloat(document.getElementById('floculante').value);
+      const flujo_m3h = parseFloat(document.getElementById('flujo').value);
+
+      const maxCoagulante = 180;
+      const maxFloculante = 373;
+
+      const caudalCoagulante = coagulante_ml * flujo_m3h;
+      const caudalFloculante = floculante_ml * flujo_m3h;
+
+      const porcentajeCoagulante = (caudalCoagulante / maxCoagulante) * 100;
+      const porcentajeFloculante = (caudalFloculante / maxFloculante) * 100;
+
+      document.getElementById('resultado').innerHTML =
+        `Coagulante: ${caudalCoagulante.toFixed(2)} L/h → ${porcentajeCoagulante.toFixed(1)}%<br>
+         Floculante: ${caudalFloculante.toFixed(2)} L/h → ${porcentajeFloculante.toFixed(1)}%`;
+    }
+  </script>
+</body>
+</html>
